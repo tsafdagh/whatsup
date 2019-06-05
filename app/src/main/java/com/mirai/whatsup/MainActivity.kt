@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
+import com.mirai.whatsup.fragment.ConversationFragment
 import com.mirai.whatsup.fragment.MyAccountFragment
 
 class MainActivity : AppCompatActivity() {
@@ -16,9 +17,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.navigation)
 
+        replaceFragment(ConversationFragment())
         navView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_people -> {
+                    replaceFragment(ConversationFragment())
                     true
                 }
 
@@ -34,7 +37,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("CommitTransaction")
     private fun replaceFragment(fragment: Fragment){
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_layout, fragment)

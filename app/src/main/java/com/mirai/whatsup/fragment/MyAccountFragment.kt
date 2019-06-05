@@ -66,12 +66,13 @@ class MyAccountFragment : Fragment() {
                         toast("Image Saved Successfully")
                     }
                 else
-                    StorageUtil.uploadFromLocalFile(selectedImagePath) { imagePath ->
+                    StorageUtil.uploadFromLocalFile(selectedImagePath) {imagePath ->
                         FireStoreUtil.updateCurrentUser(
                             editText_name.text.toString(),
                             editText_bio.text.toString(), null
                         )
-                    }
+            }
+                toast("saving")
 
             }
 

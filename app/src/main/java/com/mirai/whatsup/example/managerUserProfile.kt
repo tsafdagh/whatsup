@@ -71,7 +71,7 @@ class managerUserProfile : AppCompatActivity() {
 
     private fun getDocumentReference(): DocumentReference {
         return firestoreInstance.document(
-            "users/${FirebaseAuth.getInstance().uid ?: throw NullPointerException("UID is null..")}"
+            "users/${FirebaseAuth.getInstance().currentUser?.uid ?: throw NullPointerException("UID is null..")}"
         )
     }
 }
