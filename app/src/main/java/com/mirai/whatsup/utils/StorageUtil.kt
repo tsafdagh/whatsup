@@ -1,15 +1,12 @@
-package com.mirai.whatsup.fragment
+package com.mirai.whatsup.utils
 
-import android.content.Context
 import android.net.Uri
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
-import com.xwray.groupie.kotlinandroidextensions.Item
 import java.util.*
 
 object StorageUtil {

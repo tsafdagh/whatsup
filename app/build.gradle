@@ -67,6 +67,10 @@ dependencies {
     //Emoji
     implementation 'com.github.hani-momanii:SuperNova-Emoji:1.1'
 
+    //translate Text
+    implementation 'com.google.firebase:firebase-ml-natural-language:19.0.1'
+    implementation 'com.google.firebase:firebase-ml-natural-language-translate-model:19.0.1'
+
     //kotlin annotation processor
     kotlin {
         experimental {

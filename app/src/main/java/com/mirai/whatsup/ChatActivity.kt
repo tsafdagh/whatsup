@@ -1,5 +1,7 @@
 package com.mirai.whatsup
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Message
@@ -22,7 +24,8 @@ import org.jetbrains.anko.toast
 import java.util.*
 import android.media.RingtoneManager
 import android.media.Ringtone
-
+import com.mirai.whatsup.utils.FirebaseMlKitUtil
+import org.jetbrains.anko.indeterminateProgressDialog
 
 
 class ChatActivity : AppCompatActivity() {
@@ -94,8 +97,34 @@ class ChatActivity : AppCompatActivity() {
 
     private val onItemClick = OnItemClickListener{item, view ->
         if(item is TextMessageItem){
-
-            toast("Le message est "+item.message.text)
+            val progressdialog = indeterminateProgressDialog("Traduction en cours...")
+            FirebaseMlKitUtil.translateToEnglish(item.message.text, onComplete = {
+                if(it.equals("-1")) {
+                    toast("Traduction échouée")
+                    progressdialog.dismiss()
+                }else{
+                    progressdialog.dismiss()
+                    showTranslatedmessage(it)
+                }
+            })
         }
+    }
+
+    fun showTranslatedmessage(text: String){
+
+        val builder = AlertDialog.Builder(this)
+
+        with(builder)
+        {
+            setTitle("Tanslated message")
+            setMessage(text)
+            setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                // Do something when user press the positive button
+            })
+            show()
+
+        }
+
+
     }
 }

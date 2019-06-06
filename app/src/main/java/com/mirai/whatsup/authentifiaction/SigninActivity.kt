@@ -4,15 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
-import com.google.firebase.storage.FirebaseStorage
 import com.mirai.whatsup.MainActivity
 import com.mirai.whatsup.R
-import com.mirai.whatsup.fragment.StorageUtil
-import com.mirai.whatsup.glide.GlideApp
+import com.mirai.whatsup.utils.StorageUtil
 import com.mirai.whatsup.utils.FireStoreUtil
 import kotlinx.android.synthetic.main.activity_signin.*
 import org.jetbrains.anko.*

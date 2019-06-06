@@ -11,17 +11,14 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.ui.idp.SingleSignInActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.mirai.whatsup.MainActivity
 
 import com.mirai.whatsup.R
 import com.mirai.whatsup.SplashActivity
 import com.mirai.whatsup.glide.GlideApp
 import com.mirai.whatsup.utils.FireStoreUtil
-import kotlinx.android.synthetic.main.activity_signin.*
+import com.mirai.whatsup.utils.StorageUtil
 import kotlinx.android.synthetic.main.fragment_my_account.*
 import kotlinx.android.synthetic.main.fragment_my_account.view.*
 import org.jetbrains.anko.clearTask
@@ -66,7 +63,7 @@ class MyAccountFragment : Fragment() {
                         toast("Image Saved Successfully")
                     }
                 else
-                    StorageUtil.uploadFromLocalFile(selectedImagePath) {imagePath ->
+                    StorageUtil.uploadFromLocalFile(selectedImagePath) { imagePath ->
                         FireStoreUtil.updateCurrentUser(
                             editText_name.text.toString(),
                             editText_bio.text.toString(), null
