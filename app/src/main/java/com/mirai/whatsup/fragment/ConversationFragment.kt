@@ -9,14 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.firestore.ListenerRegistration
+import com.mirai.whatsup.AppConstants
+import com.mirai.whatsup.ChatActivity
 
 import com.mirai.whatsup.R
+import com.mirai.whatsup.receycleView.item.PersonItem
 import com.mirai.whatsup.utils.FireStoreUtil
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.OnItemClickListener
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_conversation.*
+import org.jetbrains.anko.support.v4.startActivity
 
 
 class ConversationFragment : Fragment() {
@@ -51,21 +56,28 @@ class ConversationFragment : Fragment() {
                 adapter = GroupAdapter<ViewHolder>().apply {
                     poepleSection = Section(items)
                     add(poepleSection)
+                    setOnItemClickListener(onItemClick)
                 }
-
             }
             shouldInitrecycleView = false
         }
 
-        fun updateItems(){
-
-        }
+        fun updateItems() = poepleSection.update(items)
 
         if(shouldInitrecycleView)
             init()
         else
             updateItems()
 
+    }
+
+    private val onItemClick = OnItemClickListener{item, view ->
+        if(item is PersonItem){
+            startActivity<ChatActivity>(
+                AppConstants.USER_NAME to item.person.name,
+                AppConstants.USER_ID to item.userIdFirebase
+            )
+        }
     }
 
 

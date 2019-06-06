@@ -6,8 +6,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.mirai.whatsup.entities.ChatChannel
+import com.mirai.whatsup.entities.MessageType
+import com.mirai.whatsup.entities.TextMessage
 import com.mirai.whatsup.entities.User
 import com.mirai.whatsup.receycleView.item.PersonItem
+import com.mirai.whatsup.receycleView.item.TextMessageItem
 import com.xwray.groupie.kotlinandroidextensions.Item
 
 object FireStoreUtil {
@@ -17,6 +21,8 @@ object FireStoreUtil {
         get() = firestoreInstance.document(
             "users/${FirebaseAuth.getInstance().currentUser?.uid ?: throw NullPointerException("UID is null..")}"
         )
+
+    private val chatChannelCollectionRef = firestoreInstance.collection("chatchannels")
 
     fun initCurrentUserIfFirstTime(fileUrl: String, onComplete: () -> Unit) {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
@@ -47,6 +53,8 @@ object FireStoreUtil {
             }
     }
 
+
+    // cette méthode permet de recupérer la liste des utilisateurs
     fun addUserListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
         return firestoreInstance.collection("users")
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
@@ -57,7 +65,7 @@ object FireStoreUtil {
 
                 val items = mutableListOf<Item>()
                 querySnapshot?.documents?.forEach {
-                    if(it.id != FirebaseAuth.getInstance().currentUser?.uid)
+                    if (it.id != FirebaseAuth.getInstance().currentUser?.uid)
                         items.add(PersonItem(it.toObject(User::class.java)!!, it.id, context))
                 }
 
@@ -68,4 +76,63 @@ object FireStoreUtil {
     fun removeListener(registration: ListenerRegistration) = registration.remove()
 
 
+    /*
+    cette méthode a pour but de creer ou de recupérer la liste de chaines de chat existant
+     */
+    fun getorcreateChatChannel(
+        otheruserId: String,
+        onComplete: (channelid: String) -> Unit
+    ) {
+        currentUserDocRef.collection("engagedChatChannels")
+            .document(otheruserId).get().addOnSuccessListener {
+                if (it.exists()) {
+                    onComplete(it["channelId"] as String)
+                    return@addOnSuccessListener
+                }
+
+                val currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
+                val newChannel = chatChannelCollectionRef.document()
+                newChannel.set(ChatChannel(mutableListOf(currentUserId, otheruserId)))
+
+                currentUserDocRef.collection("engagedChatChannels")
+                    .document(otheruserId)
+                    .set(mapOf("channelId" to newChannel.id))
+
+                firestoreInstance.collection("users").document(otheruserId)
+                    .collection("engagedChatChannels")
+                    .document(currentUserId)
+                    .set(mapOf("channelId" to newChannel.id))
+
+                onComplete(newChannel.id)
+            }
+    }
+
+
+    /*
+    Cette méthode retourne la liste des chat dans une chaine donnée
+     */
+    fun addChatMessagesListeber(
+        channelId: String, context: Context,
+        onListner: (List<Item>) -> Unit
+    ): ListenerRegistration {
+        return chatChannelCollectionRef.document(channelId).collection("messages")
+            .orderBy("time")
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                if (firebaseFirestoreException != null) {
+                    Log.e("FIRESTORE", "ChatMessageslistener erro.", firebaseFirestoreException)
+                    return@addSnapshotListener
+                }
+
+                val items = mutableListOf<Item>()
+                querySnapshot?.documents?.forEach {
+                    if (it["type"] == MessageType.TEXT)
+                        items.add(TextMessageItem(it.toObject(TextMessage::class.java)!!, context))
+                    else
+                        TODO("Add image message.")
+                }
+
+                onListner(items)
+
+            }
+    }
 }
