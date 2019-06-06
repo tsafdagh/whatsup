@@ -64,6 +64,9 @@ dependencies {
 
     apply plugin: 'com.google.gms.google-services'
 
+    //Emoji
+    implementation 'com.github.hani-momanii:SuperNova-Emoji:1.1'
+
     //kotlin annotation processor
     kotlin {
         experimental {

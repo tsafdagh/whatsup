@@ -6,10 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.mirai.whatsup.entities.ChatChannel
-import com.mirai.whatsup.entities.MessageType
-import com.mirai.whatsup.entities.TextMessage
-import com.mirai.whatsup.entities.User
+import com.mirai.whatsup.entities.*
 import com.mirai.whatsup.receycleView.item.PersonItem
 import com.mirai.whatsup.receycleView.item.TextMessageItem
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -135,4 +132,12 @@ object FireStoreUtil {
 
             }
     }
+
+    fun sendMessage(message: Message, channelId:String){
+        chatChannelCollectionRef.document(channelId)
+            .collection("messages")
+            .add(message)
+    }
+
+
 }
