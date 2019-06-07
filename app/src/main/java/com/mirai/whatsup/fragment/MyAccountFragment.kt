@@ -112,11 +112,6 @@ class MyAccountFragment : Fragment() {
         super.onStart()
         FireStoreUtil.getCurrentUser { user ->
 
-            toast("name "+user.name)
-            toast("bio "+user.bio)
-            toast("url "+user.profilePicturePath)
-
-
             if (this@MyAccountFragment.isVisible) {
                 editText_name.setText(user.name)
                 editText_bio.setText(user.bio)

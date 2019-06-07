@@ -13,4 +13,8 @@
     <string name="my_name">Email</string>
     <string name="my_bio">status</string>
     <string name="name_auth">name</string>
+    <string name="text_in_translating">Traduction en cours</string>
+    <string name="transleted_missing">Traduction échouée</string>
+    <string name="text_translated_text_to_english">Traduire les textes en anglais</string>
+    <string name="text_image_check">select image checket</string>
 </resources>

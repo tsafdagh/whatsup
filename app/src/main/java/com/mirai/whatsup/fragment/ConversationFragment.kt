@@ -5,14 +5,13 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.google.firebase.firestore.ListenerRegistration
 import com.mirai.whatsup.AppConstants
 import com.mirai.whatsup.ChatActivity
 
 import com.mirai.whatsup.R
+import com.mirai.whatsup.option.Configuration
 import com.mirai.whatsup.receycleView.item.PersonItem
 import com.mirai.whatsup.utils.FireStoreUtil
 import com.xwray.groupie.GroupAdapter
@@ -22,6 +21,8 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_conversation.*
 import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
+import org.jetbrains.anko.toast
 
 
 class ConversationFragment : Fragment() {
@@ -79,6 +80,7 @@ class ConversationFragment : Fragment() {
             )
         }
     }
+
 
 
 }

@@ -4,10 +4,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Message
 import android.support.v7.widget.LinearLayoutManager
-import android.widget.LinearLayout
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ListenerRegistration
 import com.mirai.whatsup.entities.MessageType
@@ -23,7 +20,9 @@ import kotlinx.android.synthetic.main.activity_chat.*
 import org.jetbrains.anko.toast
 import java.util.*
 import android.media.RingtoneManager
-import android.media.Ringtone
+import android.view.Menu
+import android.view.MenuItem
+import com.mirai.whatsup.option.Configuration
 import com.mirai.whatsup.utils.FirebaseMlKitUtil
 import org.jetbrains.anko.indeterminateProgressDialog
 
@@ -33,6 +32,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var messageListenerRegistration: ListenerRegistration
     private var shouldInitRecycleView = true
     private lateinit var messageSection: Section
+    private lateinit var otheruserName: String
+    private lateinit var otherUserUid: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,20 +42,43 @@ class ChatActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = intent.getStringExtra(AppConstants.USER_NAME)
+        otheruserName = intent.getStringExtra(AppConstants.USER_NAME)
 
         val otherUserid = intent.getStringExtra(AppConstants.USER_ID)
+        otherUserUid = intent.getStringExtra(AppConstants.USER_ID)
         FireStoreUtil.getorcreateChatChannel(otherUserid, onComplete = { channelId ->
             messageListenerRegistration =
                 FireStoreUtil.addChatMessagesListeber(channelId, this, this::updateRecycleView)
 
             imageView_send.setOnClickListener {
-                val messageText = TextMessage(
-                    editText_message.text.toString(),
-                    Calendar.getInstance().time,
-                    FirebaseAuth.getInstance().currentUser!!.uid, MessageType.TEXT
-                )
-                editText_message.setText("")
-                FireStoreUtil.sendMessage(messageText, channelId)
+                var textMessage = editText_message.text.toString()
+                if (Configuration.istranslateMessaToEnglishActived) {
+                    val progressdialog = indeterminateProgressDialog("Traduction en cours...")
+                    FirebaseMlKitUtil.translateToEnglish(textMessage, onComplete = { stransletedMessage: String ->
+                        if (stransletedMessage == "-1") {
+                            toast("Traduction échouée")
+                            progressdialog.dismiss()
+                        } else {
+                            progressdialog.dismiss()
+                            val messageText = TextMessage(
+                                stransletedMessage,
+                                Calendar.getInstance().time,
+                                FirebaseAuth.getInstance().currentUser!!.uid, MessageType.TEXT
+                            )
+                            editText_message.setText("")
+                            FireStoreUtil.sendMessage(messageText, channelId)
+                        }
+                    })
+
+                } else {
+                    val messageText = TextMessage(
+                        textMessage,
+                        Calendar.getInstance().time,
+                        FirebaseAuth.getInstance().currentUser!!.uid, MessageType.TEXT
+                    )
+                    editText_message.setText("")
+                    FireStoreUtil.sendMessage(messageText, channelId)
+                }
             }
 
             fab_send_image.setOnClickListener {
@@ -65,7 +89,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun updateRecycleView(messages: List<Item>) {
-        fun init(){
+        fun init() {
             recycler_view_messages.apply {
                 layoutManager = LinearLayoutManager(this@ChatActivity)
                 adapter = GroupAdapter<ViewHolder>().apply {
@@ -78,11 +102,11 @@ class ChatActivity : AppCompatActivity() {
             shouldInitRecycleView = false
         }
 
-        fun updateItem()= messageSection.update(messages)
+        fun updateItem() = messageSection.update(messages)
 
-        if(shouldInitRecycleView)
+        if (shouldInitRecycleView)
             init()
-        else{
+        else {
             updateItem()
             // on joue le sons de la notification
             val notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -90,19 +114,17 @@ class ChatActivity : AppCompatActivity() {
             r.play()
         }
 
-
-
-        recycler_view_messages.scrollToPosition((recycler_view_messages.adapter?.itemCount ?: 1) -1)
+        recycler_view_messages.scrollToPosition((recycler_view_messages.adapter?.itemCount ?: 1) - 1)
     }
 
-    private val onItemClick = OnItemClickListener{item, view ->
-        if(item is TextMessageItem){
+    private val onItemClick = OnItemClickListener { item, view ->
+        if (item is TextMessageItem) {
             val progressdialog = indeterminateProgressDialog("Traduction en cours...")
             FirebaseMlKitUtil.translateToEnglish(item.message.text, onComplete = {
-                if(it.equals("-1")) {
+                if (it.equals("-1")) {
                     toast("Traduction échouée")
                     progressdialog.dismiss()
-                }else{
+                } else {
                     progressdialog.dismiss()
                     showTranslatedmessage(it)
                 }
@@ -110,7 +132,7 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    fun showTranslatedmessage(text: String){
+    fun showTranslatedmessage(text: String) {
 
         val builder = AlertDialog.Builder(this)
 
@@ -122,9 +144,7 @@ class ChatActivity : AppCompatActivity() {
                 // Do something when user press the positive button
             })
             show()
-
         }
-
-
     }
+
 }
