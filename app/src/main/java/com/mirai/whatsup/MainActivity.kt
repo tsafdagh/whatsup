@@ -1,13 +1,13 @@
 package com.mirai.whatsup
 
-import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import android.widget.Toast
 import com.mirai.whatsup.fragment.ConversationFragment
 import com.mirai.whatsup.fragment.MyAccountFragment
@@ -50,30 +50,61 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.conversation_menu, menu)
+        menuInflater.inflate(R.menu.main_activity_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val itemId = item?.itemId
+
+
         when (itemId) {
             R.id.id_select_image ->
                 //TO DO
-                toast(getString(R.string.text_image_check))
+                toast("menu mon profils")
             R.id.id_menu_translete_text -> {
-                if (!Configuration.istranslateMessaToEnglishActived) {
-                    Toast.makeText(
-                        applicationContext,
-                        "Tous vos messages seront désormais en anglais",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    Configuration.istranslateMessaToEnglishActived = true
-                } else {
-                    Configuration.istranslateMessaToEnglishActived = false
-                    Toast.makeText(applicationContext, "Traduction anglaise désactivée", Toast.LENGTH_LONG).show()
+
+                var textAlert =""
+                if (!Configuration.istranslateMessaToEnglishActived)
+                    textAlert = "Voulez-vous Traduire les messages entrants et sortant?"
+                else
+                    textAlert = "Voulez-vous désactiver la traduction automatique?"
+                val dialogBuilder = AlertDialog.Builder(this).apply {
+                    setMessage(textAlert)
+                        // if the dialog is cancelable
+                        .setCancelable(false)
+                        // positive button text and action
+                        .setPositiveButton("OUI", DialogInterface.OnClickListener { dialog, id ->
+                            processTranslate()
+                            dialog.cancel()
+                        })
+                        // negative button text and action
+                        .setNegativeButton("NON", DialogInterface.OnClickListener { dialog, id ->
+                            dialog.cancel()
+                        })
                 }
+                // create dialog box
+                val alert = dialogBuilder.create()
+                // set title for alert dialog box
+                alert.setTitle("Traduction automatique")
+                // show alert dialog
+                alert.show()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun processTranslate() {
+        if (!Configuration.istranslateMessaToEnglishActived) {
+            Toast.makeText(
+                applicationContext,
+                "Tous vos messages seront désormais en anglais",
+                Toast.LENGTH_LONG
+            ).show()
+            Configuration.istranslateMessaToEnglishActived = true
+        } else {
+            Configuration.istranslateMessaToEnglishActived = false
+            Toast.makeText(applicationContext, "Traduction anglaise désactivée", Toast.LENGTH_LONG).show()
+        }
     }
 }

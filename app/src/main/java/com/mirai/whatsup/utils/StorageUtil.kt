@@ -34,7 +34,7 @@ object StorageUtil {
     private val aut = FirebaseAuth.getInstance().currentUser
     fun uploadFromLocalFile(filePath: Uri, onSuccess: (String) -> Unit) {
         var file = filePath
-        val riversRef = storageRef.child("users_profile/${aut?.email}")
+        val riversRef = storageRef.child("users_profile/${FirebaseAuth.getInstance().currentUser!!.email?: FirebaseAuth.getInstance().currentUser?.displayName}")
         var uploadTask = file?.let { riversRef.putFile(it) }
 
 // Register observers to listen for when the download is done or if it fails

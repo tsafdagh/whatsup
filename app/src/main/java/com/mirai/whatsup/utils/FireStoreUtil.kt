@@ -25,8 +25,8 @@ object FireStoreUtil {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
                 val newUser = User(
-                    FirebaseAuth.getInstance().currentUser?.email ?: "",
-                    FirebaseAuth.getInstance().currentUser?.displayName ?: "",
+                    FirebaseAuth.getInstance().currentUser?.email ?: FirebaseAuth.getInstance().currentUser?.displayName ?: "",
+                    FirebaseAuth.getInstance().currentUser?.phoneNumber ?: "",
                     fileUrl ?: ""
                 )
                 currentUserDocRef.set(newUser).addOnSuccessListener { onComplete() }

@@ -1,9 +1,12 @@
 package com.mirai.whatsup.authentifiaction
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.facebook.FacebookSdk
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
@@ -22,8 +25,10 @@ class SigninActivity : AppCompatActivity() {
         AuthUI.IdpConfig.EmailBuilder()
             .setAllowNewAccounts(true)
             .setRequireName(true)
-            .build()
-    )
+            .build(),
+        AuthUI.IdpConfig.FacebookBuilder().build()
+    ) // FACEBOOK
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +36,7 @@ class SigninActivity : AppCompatActivity() {
 
         account_sign_in.setOnClickListener {
             val intent = AuthUI.getInstance().createSignInIntentBuilder()
+                .setTheme(R.style.LoginTheme)
                 .setAvailableProviders(signInProviders)
                 .setLogo(R.drawable.emoji_icon)
                 .build()
@@ -52,11 +58,30 @@ class SigninActivity : AppCompatActivity() {
                     action = Intent.ACTION_GET_CONTENT
                     putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
                 }
-                startActivityForResult(Intent.createChooser(intent, "Image de profil"), RC_SELECT_IMAGE)
+
+                val dialogBuilder = AlertDialog.Builder(this).apply {
+                    setMessage("Voulez vous sélectionner une image de profils?")
+                        // if the dialog is cancelable
+                        .setCancelable(false)
+                        // positive button text and action
+                        .setPositiveButton("OUI", DialogInterface.OnClickListener { dialog, id ->
+                            startActivityForResult(Intent.createChooser(intent, "Image de profil"), RC_SELECT_IMAGE)
+                        })
+                        // negative button text and action
+                        .setNegativeButton("NON", DialogInterface.OnClickListener { dialog, id ->
+                            startActivity(intentFor<MainActivity>().newTask().clearTask())
+
+                        })
+                }
+                // create dialog box
+                val alert = dialogBuilder.create()
+                // set title for alert dialog box
+                alert.setTitle("Image de profils")
+                // show alert dialog
+                alert.show()
                 progressdialog.dismiss()
 
-
-            }else if (resultCode == Activity.RESULT_CANCELED) {
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 if (response == null) return
 
                 when (response.error?.errorCode) {
@@ -66,22 +91,24 @@ class SigninActivity : AppCompatActivity() {
                         longSnackbar(constraint_layout, getString(R.string.unknow_error))
                 }
             }
-        }else if(requestCode == RC_SELECT_IMAGE){
-            toast("Image Path ok")
+        } else if (requestCode == RC_SELECT_IMAGE) {
+            val progressdialog = indeterminateProgressDialog("Configuration du profils par défault")
 
             var selectedImagePath = data?.data
 
             selectedImagePath?.let {
                 StorageUtil.uploadFromLocalFile(it, onSuccess = {
-                    toast("URL: ${it}" )
+                    toast("URL image: ${it}")
+                    toast("User saved succesfully")
                     FireStoreUtil.initCurrentUserIfFirstTime(it, onComplete = {
+                        progressdialog.dismiss()
                         startActivity(intentFor<MainActivity>().newTask().clearTask())
-                        toast("User saved succesfully" )
-
                     })
                 })
             }
 
         }
     }
+
+
 }

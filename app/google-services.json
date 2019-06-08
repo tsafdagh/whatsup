@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "449187442523-9acgc8sukd1up91qrmaphbh5lupgro8h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mirai.whatsup",
+            "certificate_hash": "d579dbcdf22da2c0a9758b84496e1f1040741942"
+          }
+        },
+        {
           "client_id": "449187442523-5pnin4frb3q74ubphl9f2ohmk70c6oq9.apps.googleusercontent.com",
           "client_type": 3
         }

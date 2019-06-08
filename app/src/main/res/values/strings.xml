@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Whatsup</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -15,6 +15,10 @@
     <string name="name_auth">name</string>
     <string name="text_in_translating">Traduction en cours</string>
     <string name="transleted_missing">Traduction échouée</string>
-    <string name="text_translated_text_to_english">Traduire les textes en anglais</string>
+    <string name="text_translated_text_to_english">Translate</string>
     <string name="text_image_check">select image checket</string>
+
+        <!-- FACEBOOK PURPOSE -->
+        <string name="facebook_application_id" translatable="false">377546826197936</string>
+        <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb377546826197936</string>
 </resources>
