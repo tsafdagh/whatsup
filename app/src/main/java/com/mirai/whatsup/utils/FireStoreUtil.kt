@@ -25,7 +25,8 @@ object FireStoreUtil {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
                 val newUser = User(
-                    FirebaseAuth.getInstance().currentUser?.email ?: FirebaseAuth.getInstance().currentUser?.displayName ?: "",
+                    FirebaseAuth.getInstance().currentUser?.email ?: FirebaseAuth.getInstance().currentUser?.displayName
+                    ?: "",
                     FirebaseAuth.getInstance().currentUser?.phoneNumber ?: "",
                     fileUrl ?: ""
                 )
@@ -41,6 +42,7 @@ object FireStoreUtil {
         if (bio.isNotBlank()) userFieldMap["bio"] = bio
         if (profilPicturePath != null)
             userFieldMap["profilePicturePath"] = profilPicturePath
+        currentUserDocRef.update(userFieldMap)
     }
 
     fun getCurrentUser(onComplete: (User) -> Unit) {
@@ -133,7 +135,7 @@ object FireStoreUtil {
             }
     }
 
-    fun sendMessage(message: Message, channelId:String){
+    fun sendMessage(message: Message, channelId: String) {
         chatChannelCollectionRef.document(channelId)
             .collection("messages")
             .add(message)

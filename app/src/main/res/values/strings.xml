@@ -10,8 +10,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="my_name">Email</string>
-    <string name="my_bio">status</string>
+    <string name="my_name">nom utilisateur</string>
+    <string name="my_bio">votre status</string>
     <string name="name_auth">name</string>
     <string name="text_in_translating">Traduction en cours</string>
     <string name="transleted_missing">Traduction échouée</string>
