@@ -34,7 +34,10 @@ object StorageUtil {
     private val aut = FirebaseAuth.getInstance().currentUser
     fun uploadFromLocalFile(filePath: Uri, onSuccess: (String) -> Unit) {
         var file = filePath
-        val riversRef = storageRef.child("users_profile/${FirebaseAuth.getInstance().currentUser!!.email?: FirebaseAuth.getInstance().currentUser?.displayName}")
+        val riversRef = storageRef.child(
+            "users_profile/${FirebaseAuth.getInstance().currentUser!!.email
+                ?: FirebaseAuth.getInstance().currentUser?.displayName}"
+        )
         var uploadTask = file?.let { riversRef.putFile(it) }
 
 // Register observers to listen for when the download is done or if it fails
@@ -60,6 +63,15 @@ object StorageUtil {
                 }
             }
         }
+    }
+
+    fun uploadMessageImageFromByteArray(imagebytes: ByteArray, onSuccess: (imagePath: String) -> Unit) {
+
+        val ref = currentUserRef.child("messages/${UUID.nameUUIDFromBytes(imagebytes)}")
+        ref.putBytes(imagebytes)
+            .addOnSuccessListener {
+                onSuccess(ref.path)
+            }
     }
 
 }

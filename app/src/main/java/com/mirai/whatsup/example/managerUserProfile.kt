@@ -10,6 +10,9 @@ import com.mirai.whatsup.R
 import com.mirai.whatsup.entities.User
 import kotlinx.android.synthetic.main.activity_adding_document_and_collection.*
 import org.jetbrains.anko.toast
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class managerUserProfile : AppCompatActivity() {
 
@@ -73,5 +76,11 @@ class managerUserProfile : AppCompatActivity() {
         return firestoreInstance.document(
             "users/${FirebaseAuth.getInstance().currentUser?.uid ?: throw NullPointerException("UID is null..")}"
         )
+    }
+
+
+    private fun convertDateToHour(date: Date): String {
+        val dfTime = SimpleDateFormat("HH:mm")
+        return dfTime.format(date)
     }
 }

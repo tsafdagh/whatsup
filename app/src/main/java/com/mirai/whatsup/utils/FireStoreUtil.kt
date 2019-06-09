@@ -7,6 +7,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.mirai.whatsup.entities.*
+import com.mirai.whatsup.receycleView.item.ImageMessageItem
 import com.mirai.whatsup.receycleView.item.PersonItem
 import com.mirai.whatsup.receycleView.item.TextMessageItem
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -118,16 +119,17 @@ object FireStoreUtil {
             .orderBy("time")
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 if (firebaseFirestoreException != null) {
-                    Log.e("FIRESTORE", "ChatMessageslistener erro.", firebaseFirestoreException)
+                    Log.e("FIRESTORE", "ChatMessageslistener error.", firebaseFirestoreException)
                     return@addSnapshotListener
                 }
 
                 val items = mutableListOf<Item>()
-                querySnapshot?.documents?.forEach {
+                querySnapshot!!.documents.forEach {
                     if (it["type"] == MessageType.TEXT)
                         items.add(TextMessageItem(it.toObject(TextMessage::class.java)!!, context))
                     else
-                        TODO("Add image message.")
+                        items.add(ImageMessageItem(it.toObject(ImageMessage::class.java)!!, context))
+                    return@forEach
                 }
 
                 onListner(items)

@@ -1,7 +1,10 @@
 package com.mirai.whatsup
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.Bitmap
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -20,21 +23,28 @@ import kotlinx.android.synthetic.main.activity_chat.*
 import org.jetbrains.anko.toast
 import java.util.*
 import android.media.RingtoneManager
+import android.provider.CalendarContract
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
+import com.mirai.whatsup.entities.ImageMessage
 import com.mirai.whatsup.option.Configuration
 import com.mirai.whatsup.utils.FirebaseMlKitUtil
+import com.mirai.whatsup.utils.StorageUtil
 import org.jetbrains.anko.indeterminateProgressDialog
+import java.io.ByteArrayOutputStream
 
 
+private const val RC_SELECT_IMAGE = 2
 class ChatActivity : AppCompatActivity() {
+
+    private lateinit var currenChannelId: String
 
     private lateinit var messageListenerRegistration: ListenerRegistration
     private var shouldInitRecycleView = true
     private lateinit var messageSection: Section
     private lateinit var otheruserName: String
     private lateinit var otherUserUid: String
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +57,7 @@ class ChatActivity : AppCompatActivity() {
         val otherUserid = intent.getStringExtra(AppConstants.USER_ID)
         otherUserUid = intent.getStringExtra(AppConstants.USER_ID)
         FireStoreUtil.getorcreateChatChannel(otherUserid, onComplete = { channelId ->
+            currenChannelId = channelId
             messageListenerRegistration =
                 FireStoreUtil.addChatMessagesListeber(channelId, this, this::updateRecycleView)
 
@@ -82,10 +93,36 @@ class ChatActivity : AppCompatActivity() {
             }
 
             fab_send_image.setOnClickListener {
-                //TODO: send image message
+
+                val intent = Intent().apply {
+                    type ="image/*"
+                    action = Intent.ACTION_GET_CONTENT
+                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
+                }
+
+                startActivityForResult(Intent.createChooser(intent, "Sélectionner une image"), RC_SELECT_IMAGE)
             }
 
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == RC_SELECT_IMAGE && resultCode == Activity.RESULT_OK &&
+                data != null && data.data != null){
+            val selectedimagePath = data.data
+            val selectedImageBmp = MediaStore.Images.Media.getBitmap(contentResolver, selectedimagePath)
+            val outputStream = ByteArrayOutputStream()
+
+            selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 90,outputStream)
+            val selectedImageBytes = outputStream.toByteArray()
+
+            StorageUtil.uploadMessageImageFromByteArray(selectedImageBytes,onSuccess = {imagepath:String->
+                val messageToSend = ImageMessage(imagepath, Calendar.getInstance().time,
+                    FirebaseAuth.getInstance().currentUser!!.uid)
+
+                FireStoreUtil.sendMessage(messageToSend, currenChannelId)
+            })
+        }
     }
 
     private fun updateRecycleView(messages: List<Item>) {

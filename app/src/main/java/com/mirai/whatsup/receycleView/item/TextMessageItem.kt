@@ -10,19 +10,16 @@ import com.mirai.whatsup.R
 import com.mirai.whatsup.entities.TextMessage
 import com.mirai.whatsup.option.Configuration
 import com.mirai.whatsup.utils.FirebaseMlKitUtil
-import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_text_message.*
 import org.jetbrains.anko.backgroundResource
-import org.jetbrains.anko.indeterminateProgressDialog
-import org.jetbrains.anko.toast
 import org.jetbrains.anko.wrapContent
 import java.text.SimpleDateFormat
 
 class TextMessageItem(
     val message: TextMessage,
     val context: Context
-) : Item() {
+) : MessageItem(message) {
     override fun bind(viewHolder: ViewHolder, position: Int) {
 
         var messageText = message.text
@@ -39,14 +36,13 @@ class TextMessageItem(
                 } else {
                     progressdialog.dismiss()
                     viewHolder.textView_message_text.text = stransletedMessage
-                    setTimetext(viewHolder)
-                    setMessageRootGravity(viewHolder)
+                    super.bind(viewHolder, position)
+
                 }
             })
         } else {
             viewHolder.textView_message_text.text = messageText
-            setTimetext(viewHolder)
-            setMessageRootGravity(viewHolder)
+            super.bind(viewHolder, position)
         }
     }
 
@@ -83,5 +79,11 @@ class TextMessageItem(
 
     override fun equals(other: Any?): Boolean {
         return isSameAs(other as? TextMessageItem)
+    }
+
+    override fun hashCode(): Int {
+        var result = message.hashCode()
+        result = 31 * result + context.hashCode()
+        return result
     }
 }
