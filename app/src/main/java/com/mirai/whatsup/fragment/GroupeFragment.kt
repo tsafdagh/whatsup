@@ -1,17 +1,12 @@
 package com.mirai.whatsup.fragment
 
-
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.google.firebase.firestore.ListenerRegistration
-import com.mirai.whatsup.AppConstants
-import com.mirai.whatsup.ChatActivity
-
 import com.mirai.whatsup.R
-import com.mirai.whatsup.receycleView.item.PersonItem
 import com.mirai.whatsup.utils.FireStoreUtil
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
@@ -19,10 +14,13 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_conversation.*
+import kotlinx.android.synthetic.main.fragment_groupe.*
 import org.jetbrains.anko.support.v4.startActivity
 
 
-class ConversationFragment : Fragment() {
+
+class GroupeFragment : Fragment() {
+
 
     private lateinit var userListenerRegistration: ListenerRegistration
     private var shouldInitrecycleView = true
@@ -33,11 +31,13 @@ class ConversationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        userListenerRegistration = FireStoreUtil.addUserListener(this.activity!!, onListen = {
+        userListenerRegistration = FireStoreUtil.addGroupeListener(this.activity!!, onListen = {
             this.updateRecycleView(it)
         })
-        return inflater.inflate(R.layout.fragment_conversation, container, false)
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_groupe, container, false)
     }
+
 
     @SuppressLint("MissingSuperCall")
     override fun onDestroyView() {
@@ -49,12 +49,12 @@ class ConversationFragment : Fragment() {
     private fun updateRecycleView(items: List<Item>) {
 
         fun init(){
-            recycle_view_peaple.apply {
-                layoutManager = LinearLayoutManager(this@ConversationFragment.context)
+            recycle_view_groupe.apply {
+                layoutManager = LinearLayoutManager(this@GroupeFragment.context)
                 adapter = GroupAdapter<ViewHolder>().apply {
                     poepleSection = Section(items)
                     add(poepleSection)
-                    setOnItemClickListener(onItemClick)
+                    //setOnItemClickListener(onItemClick)
                 }
             }
             shouldInitrecycleView = false
@@ -69,15 +69,14 @@ class ConversationFragment : Fragment() {
 
     }
 
-    private val onItemClick = OnItemClickListener{item, view ->
+/*    private val onItemClick = OnItemClickListener{item, view ->
         if(item is PersonItem){
             startActivity<ChatActivity>(
                 AppConstants.USER_NAME to item.person.name,
                 AppConstants.USER_ID to item.userIdFirebase
             )
+
         }
-    }
-
-
+    }*/
 
 }

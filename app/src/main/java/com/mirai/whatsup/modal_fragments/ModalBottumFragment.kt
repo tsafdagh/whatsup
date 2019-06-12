@@ -1,15 +1,14 @@
-package com.mirai.whatsup.fragment
-
+package com.mirai.whatsup.modal_fragments
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v7.widget.LinearLayoutManager
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.google.firebase.firestore.ListenerRegistration
-import com.mirai.whatsup.AppConstants
-import com.mirai.whatsup.ChatActivity
-
 import com.mirai.whatsup.R
 import com.mirai.whatsup.receycleView.item.PersonItem
 import com.mirai.whatsup.utils.FireStoreUtil
@@ -19,14 +18,14 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_conversation.*
-import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
 
 
-class ConversationFragment : Fragment() {
-
+class ModalBottumFragment(): BottomSheetDialogFragment() {
     private lateinit var userListenerRegistration: ListenerRegistration
     private var shouldInitrecycleView = true
     private lateinit var poepleSection: Section
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +35,8 @@ class ConversationFragment : Fragment() {
         userListenerRegistration = FireStoreUtil.addUserListener(this.activity!!, onListen = {
             this.updateRecycleView(it)
         })
+
+        ParamModalFragment.listIdUserForGroup.clear()
         return inflater.inflate(R.layout.fragment_conversation, container, false)
     }
 
@@ -50,7 +51,7 @@ class ConversationFragment : Fragment() {
 
         fun init(){
             recycle_view_peaple.apply {
-                layoutManager = LinearLayoutManager(this@ConversationFragment.context)
+                layoutManager = LinearLayoutManager(this@ModalBottumFragment.context)
                 adapter = GroupAdapter<ViewHolder>().apply {
                     poepleSection = Section(items)
                     add(poepleSection)
@@ -70,14 +71,16 @@ class ConversationFragment : Fragment() {
     }
 
     private val onItemClick = OnItemClickListener{item, view ->
+        view.setBackgroundColor(Color.parseColor("#AA574B"))
         if(item is PersonItem){
-            startActivity<ChatActivity>(
-                AppConstants.USER_NAME to item.person.name,
-                AppConstants.USER_ID to item.userIdFirebase
-            )
+            toast("Utilisateur ajouter  ${item.userIdFirebase}")
+            ParamModalFragment.listIdUserForGroup.add(item.userIdFirebase)
         }
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        toast("I' destroyed")
+    }
 
 }

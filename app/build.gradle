@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'
 
 
 android {
@@ -55,6 +56,9 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:4.1.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'com.google.firebase:firebase-messaging:18.0.0'
+    //translate Text
+    implementation 'com.google.firebase:firebase-ml-natural-language:19.0.1'
+    implementation 'com.google.firebase:firebase-ml-natural-language-translate-model:19.0.1'
 
     //groupie
     implementation 'com.xwray:groupie:2.0.3'
@@ -67,12 +71,20 @@ dependencies {
     //Emoji
     implementation 'com.github.hani-momanii:SuperNova-Emoji:1.1'
 
-    //translate Text
-    implementation 'com.google.firebase:firebase-ml-natural-language:19.0.1'
-    implementation 'com.google.firebase:firebase-ml-natural-language-translate-model:19.0.1'
-
     //login via facebook
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+
+    //Crashlytic
+    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
+    }
+
+    //dépendances liées à la Caméra
+    implementation 'com.facebook.fresco:fresco:1.9.0'
+    implementation 'com.karumi:dexter:4.2.0'
+
+    //afin d'éviter le crash de l'application sur telephones inferieurs à l'api 21
+    implementation 'com.android.support:multidex:1.0.2'
 
     //kotlin annotation processor
     kotlin {

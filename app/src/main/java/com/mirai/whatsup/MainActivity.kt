@@ -10,8 +10,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.mirai.whatsup.fragment.ConversationFragment
+import com.mirai.whatsup.fragment.GroupeFragment
 import com.mirai.whatsup.fragment.MyAccountFragment
 import com.mirai.whatsup.option.Configuration
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
 class MainActivity : AppCompatActivity() {
@@ -30,8 +32,9 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navigation_my_account -> {
-                    replaceFragment(MyAccountFragment())
+                R.id.item_groupes -> {
+                    toast("conversation de groupe")
+                    replaceFragment(GroupeFragment())
                     true
                 }
 
@@ -59,12 +62,11 @@ class MainActivity : AppCompatActivity() {
 
 
         when (itemId) {
-            R.id.id_select_image ->
-                //TO DO
-                toast("menu mon profils")
+            R.id.id_menu_mon_profil ->
+                replaceFragment(MyAccountFragment())
             R.id.id_menu_translete_text -> {
 
-                var textAlert =""
+                var textAlert = ""
                 if (!Configuration.istranslateMessaToEnglishActived)
                     textAlert = "Voulez-vous Traduire les messages entrants et sortant?"
                 else
@@ -89,6 +91,11 @@ class MainActivity : AppCompatActivity() {
                 alert.setTitle("Traduction automatique")
                 // show alert dialog
                 alert.show()
+            }
+            R.id.id_item_creer_group ->{
+                toast("creer un groupe")
+                startActivity<CreationGroupe>()
+
             }
         }
         return super.onOptionsItemSelected(item)

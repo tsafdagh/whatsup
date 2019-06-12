@@ -7,8 +7,8 @@
             android:title="@string/chat"/>
 
     <item
-            android:id="@+id/navigation_my_account"
-            android:icon="@drawable/ic_account_box_black_24dp"
-            android:title="@string/mon_profils"/>
+            android:id="@+id/item_groupes"
+            android:icon="@drawable/icon_groupe_chat"
+            android:title="@string/groupes"/>
 
 </menu>

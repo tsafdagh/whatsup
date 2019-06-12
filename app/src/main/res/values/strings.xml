@@ -18,7 +18,10 @@
     <string name="text_translated_text_to_english">Translate</string>
     <string name="text_image_check">select image checket</string>
 
-        <!-- FACEBOOK PURPOSE -->
-        <string name="facebook_application_id" translatable="false">377546826197936</string>
-        <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb377546826197936</string>
+    <!-- FACEBOOK PURPOSE -->
+    <string name="facebook_application_id" translatable="false">377546826197936</string>
+    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">
+        fb377546826197936
+    </string>
+    <string name="groupes">Groupes</string>
 </resources>

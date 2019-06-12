@@ -3,8 +3,15 @@
       xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-            android:id="@+id/id_select_image"
+            android:id="@+id/id_menu_mon_profil"
             android:title="Mon profils"
+            android:enabled="true"
+            android:visible="true"
+            android:icon="@drawable/ic_account_box_black_24dp"
+    />
+    <item
+            android:id="@+id/id_item_creer_group"
+            android:title="Creer un groupe"
             android:enabled="true"
             android:visible="true"
             android:icon="@drawable/ic_account_box_black_24dp"
