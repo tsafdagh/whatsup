@@ -9,14 +9,10 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.mirai.whatsup.R
 import com.mirai.whatsup.utils.FireStoreUtil
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.OnItemClickListener
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import kotlinx.android.synthetic.main.fragment_conversation.*
 import kotlinx.android.synthetic.main.fragment_groupe.*
-import org.jetbrains.anko.support.v4.startActivity
-
 
 
 class GroupeFragment : Fragment() {

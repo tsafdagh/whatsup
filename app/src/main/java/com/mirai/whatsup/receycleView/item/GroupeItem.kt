@@ -1,6 +1,7 @@
 package com.mirai.whatsup.receycleView.item
 
 import android.content.Context
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.mirai.whatsup.R
 import com.mirai.whatsup.entities.ChatGroup
 import com.mirai.whatsup.glide.GlideApp
@@ -18,6 +19,7 @@ class GroupeItem(val chatGroupe: ChatGroup,
         if(chatGroupe.groupIcon != ""){
             GlideApp.with(context)
                 .load(chatGroupe.groupIcon)
+                .transform(CircleCrop())
                 .placeholder(R.drawable.icon_groupe_chat)
                 .into(viewHolder.imageView_profile_picture)
         }

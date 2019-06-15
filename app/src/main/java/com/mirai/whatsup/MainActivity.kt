@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.item_groupes -> {
-                    toast("conversation de groupe")
                     replaceFragment(GroupeFragment())
                     true
                 }

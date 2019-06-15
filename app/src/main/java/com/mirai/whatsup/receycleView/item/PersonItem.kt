@@ -1,6 +1,7 @@
 package com.mirai.whatsup.receycleView.item
 
 import android.content.Context
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.mirai.whatsup.R
 import com.mirai.whatsup.entities.User
 import com.mirai.whatsup.glide.GlideApp
@@ -17,11 +18,11 @@ class PersonItem(val person: User,
         if(person.profilePicturePath != null){
             GlideApp.with(context)
                 .load(person.profilePicturePath)
+                .transform(CircleCrop())
                 .placeholder(R.drawable.ic_account_box_black_24dp)
                 .into(viewHolder.imageView_profile_picture)
         }
 
     }
-
     override fun getLayout()= R.layout.item_person
 }

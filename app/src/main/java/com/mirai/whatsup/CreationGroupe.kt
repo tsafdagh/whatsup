@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -14,12 +15,14 @@ import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.Toast
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.facebook.common.util.UriUtil
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.mirai.whatsup.glide.GlideApp
 import com.mirai.whatsup.modal_fragments.ModalBottumFragment
 import com.mirai.whatsup.modal_fragments.ParamModalFragment
 import com.mirai.whatsup.utils.FireStoreUtil
@@ -32,6 +35,7 @@ import java.io.IOException
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
+import java.io.ByteArrayOutputStream
 
 class CreationGroupe : AppCompatActivity() {
 
@@ -206,18 +210,24 @@ class CreationGroupe : AppCompatActivity() {
 
         when (requestCode) {
             CAMERA_REQUEST_CODE -> {
-                toast("dans le oncativity 0.1")
+                //toast("dans le oncativity 0.1")
                 if (resultCode == Activity.RESULT_OK) {
-                    toast("dans le oncativity 1")
+                    //toast("dans le oncativity 1")
 
                     val imgUri = Uri.Builder()
                         .scheme(UriUtil.LOCAL_FILE_SCHEME)
                         .path(imageFilePath)
                         .build()
-                    toast("dans le oncativity 2")
+                    //toast("dans le oncativity 2")
+                    imageGroupeUri = data?.data
 
-                    imgAvatar.setImageURI(imgUri, this)
-                    toast("second image uri is: ${imgUri}")
+                    GlideApp.with(this)
+                        .load(imgUri?.path)
+                        .transform(CircleCrop())
+                        .into(imgAvatar)
+
+                    //imgAvatar.setImageURI(imgUri, this)
+                    //toast("second image uri is: ${imgUri}")
                     imageGroupeUri = imgUri
                 }
             }
@@ -226,7 +236,14 @@ class CreationGroupe : AppCompatActivity() {
                 var selectedImagePath = data?.data
                 imageGroupeUri = data?.data
                 toast("URI: ${selectedImagePath}")
-                imgAvatar.setImageURI(selectedImagePath, this)
+
+                GlideApp.with(this)
+                    .load(imageGroupeUri?.path)
+                    .transform(CircleCrop())
+                    .into(imgAvatar)
+
+
+                //imgAvatar.setImageURI(selectedImagePath, this)
                 /* selectedImagePath?.let {
                      StorageUtil.uploadFromLocalFile(it, onSuccess = {
                          toast("URL image: ${it}")

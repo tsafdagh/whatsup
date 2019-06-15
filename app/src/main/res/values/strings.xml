@@ -17,6 +17,7 @@
     <string name="transleted_missing">Traduction échouée</string>
     <string name="text_translated_text_to_english">Translate</string>
     <string name="text_image_check">select image checket</string>
+    <string name="text_creation_groupe">Création d\'un groupe</string>
 
     <!-- FACEBOOK PURPOSE -->
     <string name="facebook_application_id" translatable="false">377546826197936</string>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Whatsup</string>
+    <string name="text_creation_groupe">Creare un gruppo</string>
+    <string name="groupes">gruppo</string>
+</resources>

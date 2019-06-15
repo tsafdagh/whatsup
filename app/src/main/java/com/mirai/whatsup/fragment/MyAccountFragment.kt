@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -134,6 +135,7 @@ class MyAccountFragment : Fragment() {
 
             GlideApp.with(this)
                 .load(selectedImageBytes)
+                .transform(CircleCrop())
                 .into(imageView_profile_picture)
 
             pictureJustChanged = true
@@ -154,6 +156,7 @@ class MyAccountFragment : Fragment() {
                     GlideApp.with(this)
                         .load(user.profilePicturePath)
                         .placeholder(com.mirai.whatsup.R.drawable.ic_account_box_black_24dp)
+                        .transform(CircleCrop())
                         .into(imageView_profile_picture)
                 }
             }
