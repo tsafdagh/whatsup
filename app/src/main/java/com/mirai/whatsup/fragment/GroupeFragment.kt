@@ -6,13 +6,18 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.google.firebase.firestore.ListenerRegistration
+import com.mirai.whatsup.AppConstants
+import com.mirai.whatsup.ChatGroupActivity
 import com.mirai.whatsup.R
+import com.mirai.whatsup.receycleView.item.GroupeItem
 import com.mirai.whatsup.utils.FireStoreUtil
 import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.OnItemClickListener
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_groupe.*
+import org.jetbrains.anko.support.v4.startActivity
 
 
 class GroupeFragment : Fragment() {
@@ -50,7 +55,7 @@ class GroupeFragment : Fragment() {
                 adapter = GroupAdapter<ViewHolder>().apply {
                     poepleSection = Section(items)
                     add(poepleSection)
-                    //setOnItemClickListener(onItemClick)
+                    setOnItemClickListener(onItemClick)
                 }
             }
             shouldInitrecycleView = false
@@ -65,14 +70,15 @@ class GroupeFragment : Fragment() {
 
     }
 
-/*    private val onItemClick = OnItemClickListener{item, view ->
-        if(item is PersonItem){
-            startActivity<ChatActivity>(
-                AppConstants.USER_NAME to item.person.name,
-                AppConstants.USER_ID to item.userIdFirebase
+    private val onItemClick = OnItemClickListener{item, view ->
+        if(item is GroupeItem){
+            startActivity<ChatGroupActivity>(
+                AppConstants.ID_GROUPE to item.chatGroupeId,
+                AppConstants.NOM_GROUPE to item.chatGroupe.groupeName,
+                AppConstants.NOMBRE_MEMBRE_GROUPE to item.chatGroupe.members?.size.toString()
             )
 
         }
-    }*/
+    }
 
 }

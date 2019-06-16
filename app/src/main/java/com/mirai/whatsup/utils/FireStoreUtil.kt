@@ -8,10 +8,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.mirai.whatsup.entities.*
-import com.mirai.whatsup.receycleView.item.GroupeItem
-import com.mirai.whatsup.receycleView.item.ImageMessageItem
-import com.mirai.whatsup.receycleView.item.PersonItem
-import com.mirai.whatsup.receycleView.item.TextMessageItem
+import com.mirai.whatsup.receycleView.item.*
 import com.xwray.groupie.kotlinandroidextensions.Item
 import java.util.*
 
@@ -25,7 +22,7 @@ object FireStoreUtil {
 
     private val chatChannelCollectionRef = firestoreInstance.collection("chatchannels")
     private val groupeChatCollectionRef = firestoreInstance.collection("chatgroupes")
-
+    private val userCollection = firestoreInstance.collection("users")
 
     fun initCurrentUserIfFirstTime(fileUrl: String, onComplete: () -> Unit) {
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
@@ -80,6 +77,9 @@ object FireStoreUtil {
 
     fun removeListener(registration: ListenerRegistration) = registration.remove()
 
+    fun getUserByUid(uid: String, onComplete: (user: User) -> Unit) {
+        userCollection.document(uid).get().addOnSuccessListener { onComplete(it.toObject(User::class.java)!!) }
+    }
 
     /*
     cette méthode a pour but de creer ou de recupérer la liste de chaines de chat existant
@@ -213,7 +213,8 @@ object FireStoreUtil {
 
                     for (itm in curentGroup.members!!) {
                         if (itm == FirebaseAuth.getInstance().currentUser?.uid
-                            || curentGroup.adminId ==  FirebaseAuth.getInstance().currentUser?.uid) {
+                            || curentGroup.adminId == FirebaseAuth.getInstance().currentUser?.uid
+                        ) {
                             items.add(GroupeItem(it.toObject(ChatGroup::class.java)!!, it.id, context))
                             break
                         }
@@ -242,10 +243,13 @@ Cette méthode retourne la liste des chat dans un groupe donner
 
                 val items = mutableListOf<Item>()
                 querySnapshot!!.documents.forEach {
-                    if (it["type"] == MessageType.TEXT)
-                        items.add(TextMessageItem(it.toObject(TextMessage::class.java)!!, context))
-                    else
-                        items.add(ImageMessageItem(it.toObject(ImageMessage::class.java)!!, context))
+                    if (it["type"] == MessageType.TEXT) {
+                        val textMessage = it.toObject(TextMessage::class.java)!!
+                        items.add(TextMessageItemGroup(textMessage, context))
+                    } else {
+                        val imageMessage = it.toObject(ImageMessage::class.java)!!
+                        items.add(ImageMessageItemGroup(imageMessage, context))
+                    }
                     return@forEach
                 }
 
