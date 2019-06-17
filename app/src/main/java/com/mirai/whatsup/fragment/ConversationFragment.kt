@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SearchView
 import android.view.*
 import com.google.firebase.firestore.ListenerRegistration
 import com.mirai.whatsup.AppConstants
@@ -20,6 +21,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_conversation.*
 import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
 
 
 class ConversationFragment : Fragment() {
@@ -33,9 +35,16 @@ class ConversationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        userListenerRegistration = FireStoreUtil.addUserListener(this.activity!!, onListen = {
-            this.updateRecycleView(it)
-        })
+        userListenerRegistration = FireStoreUtil.addSearchUserListener("",
+            this@ConversationFragment.context!!
+            ,
+            onListen = {
+                updateRecycleView(it)
+            }
+        )
+
+        setHasOptionsMenu(true)
+
         return inflater.inflate(R.layout.fragment_conversation, container, false)
     }
 
@@ -48,7 +57,7 @@ class ConversationFragment : Fragment() {
 
     private fun updateRecycleView(items: List<Item>) {
 
-        fun init(){
+        fun init() {
             recycle_view_peaple.apply {
                 layoutManager = LinearLayoutManager(this@ConversationFragment.context)
                 adapter = GroupAdapter<ViewHolder>().apply {
@@ -62,15 +71,15 @@ class ConversationFragment : Fragment() {
 
         fun updateItems() = poepleSection.update(items)
 
-        if(shouldInitrecycleView)
+        if (shouldInitrecycleView)
             init()
         else
             updateItems()
 
     }
 
-    private val onItemClick = OnItemClickListener{item, view ->
-        if(item is PersonItem){
+    private val onItemClick = OnItemClickListener { item, view ->
+        if (item is PersonItem) {
             startActivity<ChatActivity>(
                 AppConstants.USER_NAME to item.person.name,
                 AppConstants.USER_ID to item.userIdFirebase
@@ -78,6 +87,32 @@ class ConversationFragment : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater!!.inflate(R.menu.search_menu, menu)
+
+        val mySreachViewItem = menu!!.findItem(R.id.id_search_view_conversation_fragment)
+        val mySearchView = mySreachViewItem.actionView as SearchView
+        mySearchView.isSubmitButtonEnabled = true
+        mySearchView.queryHint = "Rechercher..."
+        mySearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(searchingText: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(searchingText: String?): Boolean {
+                userListenerRegistration = FireStoreUtil.addSearchUserListener(searchingText!!,
+                    this@ConversationFragment.context!!
+                    ,
+                    onListen = {
+                        updateRecycleView(it)
+                    }
+                )
+                return true
+            }
+
+        })
+
+    }
 
 
 }

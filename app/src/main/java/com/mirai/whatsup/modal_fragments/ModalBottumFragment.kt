@@ -32,9 +32,13 @@ class ModalBottumFragment(): BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        userListenerRegistration = FireStoreUtil.addUserListener(this.activity!!, onListen = {
-            this.updateRecycleView(it)
-        })
+        userListenerRegistration = FireStoreUtil.addSearchUserListener("",
+            this@ModalBottumFragment.context!!
+            ,
+            onListen = {
+                updateRecycleView(it)
+            }
+        )
 
         ParamModalFragment.listIdUserForGroup.clear()
         return inflater.inflate(R.layout.fragment_conversation, container, false)
