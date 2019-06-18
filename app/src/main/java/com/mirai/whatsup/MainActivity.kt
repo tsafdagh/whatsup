@@ -63,34 +63,6 @@ class MainActivity : AppCompatActivity() {
         when (itemId) {
             R.id.id_menu_mon_profil ->
                 replaceFragment(MyAccountFragment())
-            R.id.id_menu_translete_text -> {
-
-                var textAlert = ""
-                if (!Configuration.istranslateMessaToEnglishActived)
-                    textAlert = "Voulez-vous Traduire les messages entrants et sortant?"
-                else
-                    textAlert = "Voulez-vous désactiver la traduction automatique?"
-                val dialogBuilder = AlertDialog.Builder(this).apply {
-                    setMessage(textAlert)
-                        // if the dialog is cancelable
-                        .setCancelable(false)
-                        // positive button text and action
-                        .setPositiveButton("OUI", DialogInterface.OnClickListener { dialog, id ->
-                            processTranslate()
-                            dialog.cancel()
-                        })
-                        // negative button text and action
-                        .setNegativeButton("NON", DialogInterface.OnClickListener { dialog, id ->
-                            dialog.cancel()
-                        })
-                }
-                // create dialog box
-                val alert = dialogBuilder.create()
-                // set title for alert dialog box
-                alert.setTitle("Traduction automatique")
-                // show alert dialog
-                alert.show()
-            }
             R.id.id_item_creer_group ->{
                 toast("creer un groupe")
                 startActivity<CreationGroupe>()
@@ -98,19 +70,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun processTranslate() {
-        if (!Configuration.istranslateMessaToEnglishActived) {
-            Toast.makeText(
-                applicationContext,
-                "Tous vos messages seront désormais en anglais",
-                Toast.LENGTH_LONG
-            ).show()
-            Configuration.istranslateMessaToEnglishActived = true
-        } else {
-            Configuration.istranslateMessaToEnglishActived = false
-            Toast.makeText(applicationContext, "Traduction anglaise désactivée", Toast.LENGTH_LONG).show()
-        }
     }
 }

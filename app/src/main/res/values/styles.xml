@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -29,6 +29,13 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textColorHint">@android:color/white</item>
+    </style>
+
+    <style name="AlertDialogCustomStyle" parent="@android:style/Theme.Material.Dialog" tools:targetApi="lollipop">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:headerDividersEnabled">true</item>
+        <item name="android:background">@color/colorAccent</item>
     </style>
 
 </resources>

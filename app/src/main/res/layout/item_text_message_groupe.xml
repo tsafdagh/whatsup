@@ -30,6 +30,7 @@
                 android:minWidth="120dp"
                 android:layout_below="@+id/textView_sender_name_txt"
                 android:layout_height="wrap_content"
+                android:textIsSelectable="true"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:paddingTop="4dp"
