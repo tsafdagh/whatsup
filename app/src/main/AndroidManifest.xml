@@ -17,12 +17,13 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".UserProfil">
+        </activity>
         <activity android:name=".ChatGroupActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".MainActivity"/>
-        </activity>
-        <!-- propre à la camera -->
+        </activity> <!-- propre à la camera -->
         <provider
                 android:name="android.support.v4.content.FileProvider"
                 android:authorities="${applicationId}.fileprovider"

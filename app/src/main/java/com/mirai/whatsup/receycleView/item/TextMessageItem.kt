@@ -20,16 +20,18 @@ class TextMessageItem(
     val message: TextMessage,
     val context: Context
 ) : MessageItem(message) {
+
+    var isSelectet = false
     override fun bind(viewHolder: ViewHolder, position: Int) {
 
         var messageText = message.text
-        if (Configuration.istranslateMessaToEnglishActived) {
+        if (Configuration.istranslateMessaActived) {
             val progressdialog = ProgressDialog(context)
             progressdialog.setMessage(context.getString(R.string.text_in_translating))
             progressdialog.setCancelable(false)
             progressdialog.show()
 
-            FirebaseMlKitUtil.translateToEnglish(messageText, onComplete = { stransletedMessage: String ->
+            FirebaseMlKitUtil.translateToAnyLanguage(messageText, Configuration.oldLanguage,Configuration.translete_language, onComplete = { stransletedMessage: String ->
                 if (stransletedMessage.equals("-1")) {
                     Toast.makeText(context, context.getString(R.string.transleted_missing), Toast.LENGTH_LONG).show()
                     progressdialog.dismiss()

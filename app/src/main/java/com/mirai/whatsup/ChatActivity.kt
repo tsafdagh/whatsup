@@ -34,6 +34,7 @@ import com.mirai.whatsup.utils.FirebaseMlKitUtil
 import com.mirai.whatsup.utils.StorageUtil
 import com.xwray.groupie.*
 import org.jetbrains.anko.Android
+import org.jetbrains.anko.gray
 import org.jetbrains.anko.indeterminateProgressDialog
 import java.io.ByteArrayOutputStream
 
@@ -57,6 +58,10 @@ class ChatActivity : AppCompatActivity() {
         supportActionBar?.title = intent.getStringExtra(AppConstants.USER_NAME)
         otheruserName = intent.getStringExtra(AppConstants.USER_NAME)
 
+        //on désactive la traduction automatique
+        Configuration.istranslateMessaActived = false
+
+
         val otherUserid = intent.getStringExtra(AppConstants.USER_ID)
         otherUserUid = intent.getStringExtra(AppConstants.USER_ID)
         FireStoreUtil.getorcreateChatChannel(otherUserid, onComplete = { channelId ->
@@ -66,9 +71,9 @@ class ChatActivity : AppCompatActivity() {
 
             imageView_send.setOnClickListener {
                 var textMessage = editText_message.text.toString()
-                if (Configuration.istranslateMessaToEnglishActived) {
+                if (Configuration.istranslateMessaActived) {
                     val progressdialog = indeterminateProgressDialog("Traduction en cours...")
-                    FirebaseMlKitUtil.translateToEnglish(textMessage, onComplete = { stransletedMessage: String ->
+                    FirebaseMlKitUtil.translateToAnyLanguage(textMessage, Configuration.oldLanguage, Configuration.translete_language, onComplete = { stransletedMessage: String ->
                         if (stransletedMessage == "-1") {
                             toast("Traduction échouée")
                             progressdialog.dismiss()
@@ -137,7 +142,8 @@ class ChatActivity : AppCompatActivity() {
                     messageSection = Section(messages)
                     this.add(messageSection)
                     //setOnItemClickListener(onItemClick)
-                    setOnItemLongClickListener(onItemLongClick)
+                    //setOnItemLongClickListener(onItemLongClick)
+                    setOnItemClickListener(onItemClick)
                 }
             }
 
@@ -159,33 +165,36 @@ class ChatActivity : AppCompatActivity() {
         recycler_view_messages.scrollToPosition((recycler_view_messages.adapter?.itemCount ?: 1) - 1)
     }
 
-    private val onItemLongClick = OnItemLongClickListener{item, view ->
+    private val onItemClick = OnItemClickListener{item, view ->
 
 
         if(item is TextMessageItem){
-            toast("Long click listener declencher")
-            val items = arrayOf("Traduire", "Marquer")
+            val items = arrayOf("Traduire", "Marquer le message")
             val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustomStyle))
+            view.setBackgroundColor(Color.TRANSPARENT)
             with(builder)
             {
                 setTitle("Choisir une action")
                 setItems(items) { dialog, which ->
                     when(items[which]){
                         "Traduire" ->{
-                           toast("traduction")
                             showAnaylanguageTranslatedDialog(item.message.text)
-                        }
-                        "Marquer"->{
-                            view.setBackgroundColor(Color.RED)
-                        }
+                            if(!item.isSelectet){
+                                view.setBackgroundColor(Color.RED)
+                                item.isSelectet =true
+                            }else{
+                                item.isSelectet =false
+                            }
 
-
+                        }
+                        "Marquer le message"->{
+                            view.setBackgroundColor(Color.YELLOW)
+                        }
                     }
                 }
                 /*  setPositiveButton("OK") { dialog:DialogInterface, which:Int ->
                       toast("selection OK")
                   }*/
-
                 show()
             }
         }
@@ -215,7 +224,7 @@ class ChatActivity : AppCompatActivity() {
                     }
                     "Français"->{
                         toast("Francais")
-                        val progressdialog = indeterminateProgressDialog("In translated...")
+                        val progressdialog = indeterminateProgressDialog("In translate...")
                         FirebaseMlKitUtil.translateToAnyLanguage(messsageSource, FirebaseTranslateLanguage.EN, FirebaseTranslateLanguage.FR, onComplete = {
                             if (it.equals("-1")) {
                                 toast("Traduction échouée")
@@ -252,7 +261,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
 
-    private val onItemClick = OnItemClickListener { item, view ->
+   /* private val onItemClick = OnItemClickListener { item, view ->
         if (item is TextMessageItem) {
             val progressdialog = indeterminateProgressDialog("Traduction en cours...")
             FirebaseMlKitUtil.translateToEnglish(item.message.text, onComplete = {
@@ -265,7 +274,7 @@ class ChatActivity : AppCompatActivity() {
                 }
             })
         }
-    }
+    }*/
 
     fun showTranslatedmessage(text: String) {
 
@@ -288,13 +297,45 @@ class ChatActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        var textAlert = ""
 
+        if(Configuration.istranslateMessaActived){
+            textAlert = if(Configuration.translete_language == FirebaseTranslateLanguage.EN)
+                "Vous avez déja activer la traduction automatique en Anglais voulez-vous la désactiver ?"
+            else
+                "Vous avez déja activer la traduction automatique en Français voulez-vous la désactiver ?"
+        }
         when (item?.itemId){
-            R.id.id_menu_translete_all_input ->{
+            R.id.id_menu_translete_all_input_en ->{
 
-                var textAlert = ""
-                if (!Configuration.istranslateMessaToEnglishActived)
-                    textAlert = "Voulez-vous Traduire les messages entrants et sortant?"
+                if (!Configuration.istranslateMessaActived)
+                    textAlert = "Voulez-vous Traduire tous les messages entrants et sortant en Anglais ?"
+
+                val dialogBuilder = AlertDialog.Builder(this).apply {
+                    setMessage(textAlert)
+                        // if the dialog is cancelable
+                        .setCancelable(false)
+                        // positive button text and action
+                        .setPositiveButton("OUI") { dialog, id ->
+                            processTranslate(FirebaseTranslateLanguage.EN)
+                            dialog.cancel()
+                        }
+                        // negative button text and action
+                        .setNegativeButton("NON") { dialog, id ->
+                            dialog.cancel()
+                        }
+                }
+                // create dialog box
+                val alert = dialogBuilder.create()
+                // set title for alert dialog box
+                alert.setTitle("Traduction automatique")
+                // show alert dialog
+                alert.show()
+            }
+
+            R.id.id_menu_translete_all_input_fr ->{
+                if (!Configuration.istranslateMessaActived)
+                    textAlert = "Voulez-vous Traduire tous les messages entrants et sortant en Français ?"
                 else
                     textAlert = "Voulez-vous désactiver la traduction automatique?"
                 val dialogBuilder = AlertDialog.Builder(this).apply {
@@ -303,7 +344,7 @@ class ChatActivity : AppCompatActivity() {
                         .setCancelable(false)
                         // positive button text and action
                         .setPositiveButton("OUI") { dialog, id ->
-                            processTranslate()
+                            processTranslate(FirebaseTranslateLanguage.FR)
                             dialog.cancel()
                         }
                         // negative button text and action
@@ -322,18 +363,26 @@ class ChatActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun processTranslate() {
-        if (!Configuration.istranslateMessaToEnglishActived) {
+    private fun processTranslate(language: Int) {
+        if (!Configuration.istranslateMessaActived) {
             Toast.makeText(
                 applicationContext,
-                "Tous vos messages seront désormais en anglais",
+                "Tous vos messages seront désormais en la langue sélectionnée",
                 Toast.LENGTH_LONG
             ).show()
-            Configuration.istranslateMessaToEnglishActived = true
+            Configuration.istranslateMessaActived = true
+            Configuration.oldLanguage = Configuration.translete_language
+            Configuration.translete_language = language
         } else {
-            Configuration.istranslateMessaToEnglishActived = false
-            Toast.makeText(applicationContext, "Traduction anglaise désactivée", Toast.LENGTH_LONG).show()
+            Configuration.istranslateMessaActived = false
+            Toast.makeText(applicationContext, "Traduction automatique désactivée", Toast.LENGTH_LONG).show()
         }
+    }
+
+    //on désactive la traduction dè lors que l'utilisateur sort de la conversation
+    override fun onBackPressed() {
+        super.onBackPressed()
+        Configuration.istranslateMessaActived = false
     }
 
 }

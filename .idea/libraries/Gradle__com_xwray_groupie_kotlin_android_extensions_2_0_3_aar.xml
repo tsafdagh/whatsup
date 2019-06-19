@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.xwray:groupie-kotlin-android-extensions:2.0.3@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/873b02ae9fcdaec4978029130c4481eb/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/873b02ae9fcdaec4978029130c4481eb/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.xwray/groupie-kotlin-android-extensions/2.0.3/568618ee6757fff2cf70ea2cb1e888a5c3203708/groupie-kotlin-android-extensions-2.0.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
