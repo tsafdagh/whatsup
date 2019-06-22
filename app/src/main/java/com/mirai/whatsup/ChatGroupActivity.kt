@@ -64,12 +64,13 @@ class ChatGroupActivity : AppCompatActivity() {
         //on désactive la traduction automatique
         Configuration.istranslateMessaActived = false
 
-        messageListenerRegistration = FireStoreUtil.addGroupeChatMessagesListener(currentGroupeUID, this, onListner = {
-            updateRecycleView(it)
-        })
+        messageListenerRegistration =
+            FireStoreUtil.addGroupeChatMessagesListener(AppConstants.NO_LANGUAGE, currentGroupeUID, this, onListner = {
+                updateRecycleView(it)
+            })
         imageView_send_groupe.setOnClickListener {
             var textMessage = editText_message_groupe.text.toString()
-            if (Configuration.istranslateMessaActived) {
+/*            if (Configuration.istranslateMessaActived) {
                 val progressdialog = indeterminateProgressDialog("Traduction en cours...")
                 FirebaseMlKitUtil.translateToAnyLanguage(
                     textMessage,
@@ -89,17 +90,17 @@ class ChatGroupActivity : AppCompatActivity() {
                             editText_message_groupe.setText("")
                             FireStoreUtil.sendGroupeMessage(messageText, currentGroupeUID)
                         }
-                    })
+                    })*/
 
-            } else {
-                val messageText = TextMessage(
-                    textMessage,
-                    Calendar.getInstance().time,
-                    FirebaseAuth.getInstance().currentUser!!.uid, MessageType.TEXT
-                )
-                editText_message_groupe.setText("")
-                FireStoreUtil.sendGroupeMessage(messageText, currentGroupeUID)
-            }
+            // } else {
+            val messageText = TextMessage(
+                textMessage,
+                Calendar.getInstance().time,
+                FirebaseAuth.getInstance().currentUser!!.uid, MessageType.TEXT
+            )
+            editText_message_groupe.setText("")
+            FireStoreUtil.sendGroupeMessage(messageText, currentGroupeUID)
+            //}
         }
 
         fab_send_image_groupe.setOnClickListener {
@@ -168,7 +169,7 @@ class ChatGroupActivity : AppCompatActivity() {
     private val onItemClick = OnItemClickListener { item, view ->
 
         val progressdialog = ProgressDialog(this)
-        progressdialog.setMessage("Chagement")
+        progressdialog.setMessage("Chargement")
         progressdialog.setCancelable(false)
         progressdialog.show()
         if (item is TextMessageItemGroup) {
@@ -176,33 +177,18 @@ class ChatGroupActivity : AppCompatActivity() {
             //on recherche le nom de l'utilisateur ayant envoyer le message
             FireStoreUtil.getUserByUid(item.message.senderId, onComplete = {
                 progressdialog.dismiss()
-                val items = arrayOf("Demarer un chat privé avec " + it.name, "Traduire", "Marquer le message")
                 val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustomStyle))
-                view.setBackgroundColor(Color.TRANSPARENT)
+
                 with(builder)
                 {
-                    setTitle("Choisir une action")
-                    setItems(items) { dialog, which ->
-                        when (items[which]) {
-                            "Traduire" -> {
-                                showAnaylanguageTranslatedDialog(item.message.text)
-                                if (!item.isSelectet) {
-                                    view.setBackgroundColor(Color.RED)
-                                    item.isSelectet = true
-                                } else {
-                                    item.isSelectet = false
-                                }
-
-                            }
-                            "Marquer le message" -> {
-                                view.setBackgroundColor(Color.YELLOW)
-                            }
-                            "Demarer un chat privé avec " + it.name -> {
-                               openChatActivity(it, item.message.senderId)
-                            }
-                        }
-                    }
-
+                    setTitle("Démarrer un nouveau chat ")
+                    setMessage("Démarer le chat avec avec " + it.name)
+                    setPositiveButton("Oui", DialogInterface.OnClickListener { dialog, which ->
+                        openChatActivity(it, item.message.senderId)
+                    })
+                    setNegativeButton("Non", DialogInterface.OnClickListener { dialog, which ->
+                        // Do something when user press the positive button
+                    })
                     show()
                 }
             })
@@ -233,16 +219,16 @@ class ChatGroupActivity : AppCompatActivity() {
     }
 
     private fun openChatActivity(it: User, senderId: String) {
-       // startActivity<ChatActivity>(AppConstants.USER_NAME to it.name, AppConstants.USER_ID to senderId)
+        // startActivity<ChatActivity>(AppConstants.USER_NAME to it.name, AppConstants.USER_ID to senderId)
         val myIntent = Intent(this, ChatActivity::class.java)
-        myIntent.putExtra(AppConstants.USER_NAME , it.name)
-        myIntent.putExtra(AppConstants.USER_ID , senderId)
+        myIntent.putExtra(AppConstants.USER_NAME, it.name)
+        myIntent.putExtra(AppConstants.USER_ID, senderId)
 
         startActivity(myIntent)
         finish()
     }
 
-    private fun showAnaylanguageTranslatedDialog(messsageSource: String) {
+    /*private fun showAnaylanguageTranslatedDialog(messsageSource: String) {
         val items = arrayOf("Anglais", "Français", "Japonais")
         val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustomStyle))
         with(builder)
@@ -305,9 +291,9 @@ class ChatGroupActivity : AppCompatActivity() {
 
                 }
             }
-            /*  setPositiveButton("OK") { dialog:DialogInterface, which:Int ->
+            *//*  setPositiveButton("OK") { dialog:DialogInterface, which:Int ->
                   toast("selection OK")
-              }*/
+              }*//*
             setNegativeButton("FERMER") { dialog, which ->
                 // Do something when user press the positive button
             }
@@ -315,7 +301,7 @@ class ChatGroupActivity : AppCompatActivity() {
             show()
         }
     }
-
+*/
     fun showTranslatedmessage(text: String) {
 
         val builder = AlertDialog.Builder(this)
@@ -356,16 +342,19 @@ class ChatGroupActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         var textAlert = ""
 
-        if (Configuration.istranslateMessaActived) {
+/*        if (Configuration.istranslateMessaActived) {
             textAlert = if (Configuration.translete_language == FirebaseTranslateLanguage.EN)
                 "Vous avez déja activer la traduction automatique en Anglais voulez-vous la désactiver ?"
             else
                 "Vous avez déja activer la traduction automatique en Français voulez-vous la désactiver ?"
-        }
+        }*/
         when (item?.itemId) {
             R.id.id_menu_translete_all_input_en -> {
+                FireStoreUtil.addGroupeChatMessagesListener(AppConstants.ENGLISH, currentGroupeUID, this, onListner = {
+                    updateRecycleView(it)
+                })
 
-                if (!Configuration.istranslateMessaActived)
+/*                if (!Configuration.istranslateMessaActived)
                     textAlert = "Voulez-vous Traduire tous les messages entrants et sortant en Anglais ?"
 
                 val dialogBuilder = AlertDialog.Builder(this).apply {
@@ -387,11 +376,14 @@ class ChatGroupActivity : AppCompatActivity() {
                 // set title for alert dialog box
                 alert.setTitle("Traduction automatique")
                 // show alert dialog
-                alert.show()
+                alert.show()*/
             }
 
             R.id.id_menu_translete_all_input_fr -> {
-                if (!Configuration.istranslateMessaActived)
+                FireStoreUtil.addGroupeChatMessagesListener(AppConstants.FRENCH, currentGroupeUID, this, onListner = {
+                    updateRecycleView(it)
+                })
+/*                if (!Configuration.istranslateMessaActived)
                     textAlert = "Voulez-vous Traduire tous les messages entrants et sortant en Français ?"
                 else
                     textAlert = "Voulez-vous désactiver la traduction automatique?"
@@ -414,12 +406,25 @@ class ChatGroupActivity : AppCompatActivity() {
                 // set title for alert dialog box
                 alert.setTitle("Traduction automatique")
                 // show alert dialog
-                alert.show()
+                alert.show()*/
             }
+
+            R.id.id_menu_text_originale -> {
+                FireStoreUtil.addGroupeChatMessagesListener(
+                    AppConstants.NO_LANGUAGE,
+                    currentGroupeUID,
+                    this,
+                    onListner = {
+                        updateRecycleView(it)
+                    })
+            }
+
+
         }
         return super.onOptionsItemSelected(item)
     }
 
+/*
     private fun processTranslate(language: Int) {
         if (!Configuration.istranslateMessaActived) {
             Toast.makeText(
@@ -435,10 +440,11 @@ class ChatGroupActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "Traduction automatique désactivée", Toast.LENGTH_LONG).show()
         }
     }
+*/
 
     //on désactive la traduction dè lors que l'utilisateur sort de la conversation
     override fun onBackPressed() {
         super.onBackPressed()
-        Configuration.istranslateMessaActived = false
+        //Configuration.istranslateMessaActived = false
     }
 }

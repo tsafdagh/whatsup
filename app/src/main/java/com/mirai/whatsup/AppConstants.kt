@@ -13,6 +13,6 @@ object AppConstants {
 
     const val ENGLISH = "english"
     const val FRENCH = "french"
-    const val NO_LANGUAGE = "no_LANGUAGE"
+    const val NO_LANGUAGE = "default"
 
 }

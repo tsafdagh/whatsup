@@ -382,6 +382,7 @@ object FireStoreUtil {
 Cette méthode retourne la liste des chat dans un groupe donner
  */
     fun addGroupeChatMessagesListener(
+        langue:String,
         groupeId: String,
         context: Context,
         onListner: (List<Item>) -> Unit
@@ -398,7 +399,7 @@ Cette méthode retourne la liste des chat dans un groupe donner
                 querySnapshot!!.documents.forEach {
                     if (it["type"] == MessageType.TEXT) {
                         val textMessage = it.toObject(TextMessage::class.java)!!
-                        items.add(TextMessageItemGroup(textMessage, context))
+                        items.add(TextMessageItemGroup(langue,textMessage, context))
                     } else {
                         val imageMessage = it.toObject(ImageMessage::class.java)!!
                         items.add(ImageMessageItemGroup(imageMessage, context))

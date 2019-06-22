@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:textIsSelectable="true"
                 android:paddingStart="8dp"
-                android:layout_margin="8dp"
+                android:layout_margin="15dp"
                 android:paddingEnd="8dp"
                 android:paddingTop="4dp"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
@@ -54,28 +54,31 @@
                 android:layout_alignEnd="@+id/textView_message_time"
                 android:orientation="horizontal">
             <Button
-                    android:id="@+id/button_no_translate_item"
+                    android:id="@+id/button_no_translate_item_group"
                     android:background="@drawable/ronded_button_originale"
                     android:layout_width="50dp"
                     android:layout_height="25dp"
                     android:textAllCaps="false"
                     android:textSize="11dp"
                     android:layout_marginRight="10dp"
+                    android:visibility="gone"
                     android:text="Original"/>
             <Button
                     android:id="@+id/button_translate_item_groupe"
                     android:background="@drawable/ronded_button_langue"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:visibility="gone"
                     android:textAllCaps="false"
                     android:text="fr"/>
             <Button
-                    android:id="@+id/button_translate_demarer_chat"
+                    android:id="@+id/button_send_private_mssg"
+                    android:visibility="gone"
                     android:layout_margin="3dp"
-                    android:layout_width="50dp"
-                    android:layout_height="25dp"
-                    android:textAllCaps="false"
-                    android:text="fr"/>
+                    android:layout_width="35dp"
+                    android:layout_height="19dp"
+                    android:gravity="end"
+                    android:background="@drawable/start_p_chat"/>
         </LinearLayout>
     </RelativeLayout>
 </FrameLayout>
