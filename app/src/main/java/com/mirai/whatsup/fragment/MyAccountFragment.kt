@@ -127,7 +127,7 @@ class MyAccountFragment : Fragment() {
             data != null && data.data != null
         ) {
             selectedImagePath = data.data
-            val selectedImageBmp = MediaStore.Images.Media.getBitmap(activity?.contentResolver, selectedImagePath)
+            val selectedImageBmp = MediaStore.Images.Media.getBitmap(activity!!.contentResolver, selectedImagePath)
 
             val outPutStream = ByteArrayOutputStream()
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 90, outPutStream)

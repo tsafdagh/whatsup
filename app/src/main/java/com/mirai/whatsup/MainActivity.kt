@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.mirai.whatsup.authentifiaction.UserProfil
 import com.mirai.whatsup.fragment.ConversationFragment
 import com.mirai.whatsup.fragment.GroupeFragment
 import com.mirai.whatsup.fragment.MyAccountFragment
@@ -64,8 +65,9 @@ class MainActivity : AppCompatActivity() {
 
 
         when (itemId) {
-            R.id.id_menu_mon_profil ->
-                replaceFragment(MyAccountFragment())
+            R.id.id_menu_mon_profil ->{
+                startActivity<UserProfil>()
+            }
             R.id.id_item_creer_group ->{
                 toast("creer un groupe")
                 startActivity<CreationGroupe>()

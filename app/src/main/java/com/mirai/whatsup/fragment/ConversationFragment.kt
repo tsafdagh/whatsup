@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.*
 import com.google.firebase.firestore.ListenerRegistration
 import com.mirai.whatsup.AppConstants
@@ -71,9 +72,13 @@ class ConversationFragment : Fragment() {
 
         fun updateItems() = poepleSection.update(items)
 
-        if (shouldInitrecycleView)
-            init()
-        else
+        if (shouldInitrecycleView) {
+            try {
+                init()
+            } catch (e: Exception) {
+                Log.e("Groupefragent", "Erreur Null: " + e.message)
+            }
+        } else
             updateItems()
 
     }

@@ -60,16 +60,23 @@ class SigninActivity : AppCompatActivity() {
                 }
 
                 val dialogBuilder = AlertDialog.Builder(this).apply {
-                    setMessage("Voulez vous sélectionner une image de profils?")
+                    setMessage("Voulez vous personnaliser profils?")
                         // if the dialog is cancelable
                         .setCancelable(false)
                         // positive button text and action
                         .setPositiveButton("OUI", DialogInterface.OnClickListener { dialog, id ->
-                            startActivityForResult(Intent.createChooser(intent, "Image de profil"), RC_SELECT_IMAGE)
+                            //startActivityForResult(Intent.createChooser(intent, "Image de profil"), RC_SELECT_IMAGE)
+                            FireStoreUtil.initCurrentUserIfFirstTime("", onComplete = {
+                                progressdialog.dismiss()
+                                startActivity(intentFor<UserProfil>().newTask().clearTask())
+                            })
                         })
                         // negative button text and action
                         .setNegativeButton("NON", DialogInterface.OnClickListener { dialog, id ->
-                            startActivity(intentFor<MainActivity>().newTask().clearTask())
+                            FireStoreUtil.initCurrentUserIfFirstTime("", onComplete = {
+                                progressdialog.dismiss()
+                                startActivity(intentFor<MainActivity>().newTask().clearTask())
+                            })
 
                         })
                 }

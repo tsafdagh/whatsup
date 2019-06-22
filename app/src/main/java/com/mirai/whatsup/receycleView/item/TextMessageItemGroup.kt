@@ -188,6 +188,8 @@ class TextMessageItemGroup(
         }else{
             viewHolder.button_no_translate_item_group.visibility = View.GONE
         }
+
+
         setMessageRootGravity(viewHolder)
     }
 

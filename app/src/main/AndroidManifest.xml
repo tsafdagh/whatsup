@@ -2,13 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.mirai.whatsup">
-
-
-    <!-- Cette restriction permet de s'assurer que les telephone
-    qui veront et pourons télécarger cette appli sur playstore ont une camera -->
-
-    <uses-feature android:name="android.hardware.camera"
-                  android:required="true"/>
+    <!--
+     Cette restriction permet de s'assurer que les telephone
+    qui veront et pourons télécarger cette appli sur playstore ont une camera
+    -->
+    <uses-feature
+            android:name="android.hardware.camera"
+            android:required="true"/>
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -24,8 +24,12 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".UserProfil">
+        <activity android:name=".authentifiaction.UserProfil">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
         </activity>
+
         <activity android:name=".ChatGroupActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
