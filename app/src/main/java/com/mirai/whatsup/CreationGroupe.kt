@@ -68,7 +68,7 @@ class CreationGroupe : AppCompatActivity() {
                     }
                     // negative button text and action
                     .setNegativeButton("NON") { dialog, id ->
-                        dispatchTakePictureIntent()
+                        //dispatchTakePictureIntent()
                         dialog.cancel()
                     }
             }
@@ -110,7 +110,7 @@ class CreationGroupe : AppCompatActivity() {
             else {
                 val snackbar = Snackbar.make(
                     id_vue_creer_groupe,
-                    "Vous devez sélectionner des membres du groupe et/ou une image",
+                    "sélectionnez des membres du groupe et/ou  une image",
                     Snackbar.LENGTH_LONG
                 )
                 snackbar.show()

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
             android:id="@+id/id_menu_translete_all_input_en"
-            android:title="@string/text_translated_text_to_english"
+            android:title="@string/traduiction_angllaise"
             android:enabled="true"
             android:visible="true"
             app:showAsAction="ifRoom"
@@ -10,7 +10,7 @@
 
     <item
             android:id="@+id/id_menu_translete_all_input_fr"
-            android:title="@string/text_translated_text_to_english"
+            android:title="@string/traduire_en_fran_ais"
             android:enabled="true"
             android:visible="true"
             app:showAsAction="ifRoom"
