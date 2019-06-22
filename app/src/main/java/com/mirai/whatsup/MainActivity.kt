@@ -13,6 +13,7 @@ import com.mirai.whatsup.fragment.ConversationFragment
 import com.mirai.whatsup.fragment.GroupeFragment
 import com.mirai.whatsup.fragment.MyAccountFragment
 import com.mirai.whatsup.option.Configuration
+import com.mirai.whatsup.utils.FirebaseMlKitUtil
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
@@ -23,6 +24,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.navigation)
+
+        //FirebaseMlKitUtil.downloadEhglishFrenchLanguage(this)
 
         replaceFragment(ConversationFragment())
         navView.setOnNavigationItemSelectedListener {

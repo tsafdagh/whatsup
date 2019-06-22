@@ -59,7 +59,7 @@ class ChatGroupActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat_group)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = intent.getStringExtra(AppConstants.NOM_GROUPE)
-        sizeOfmember = intent.getStringExtra(AppConstants.NOMBRE_MEMBRE_GROUPE).toInt()
+        //sizeOfmember = intent.getStringExtra(AppConstants.NOMBRE_MEMBRE_GROUPE).toInt()
         currentGroupeUID = intent.getStringExtra(AppConstants.ID_GROUPE)
         //on désactive la traduction automatique
         Configuration.istranslateMessaActived = false

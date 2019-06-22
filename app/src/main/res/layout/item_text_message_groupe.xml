@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:textIsSelectable="true"
                 android:paddingStart="8dp"
+                android:layout_margin="8dp"
                 android:paddingEnd="8dp"
                 android:paddingTop="4dp"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
@@ -45,5 +46,36 @@
                 android:layout_marginEnd="8dp"
                 android:textSize="12sp"
                 tools:text="3/15/2018 3:00 PM"/>
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:layout_below="@+id/textView_message_time"
+                android:layout_alignEnd="@+id/textView_message_time"
+                android:orientation="horizontal">
+            <Button
+                    android:id="@+id/button_no_translate_item"
+                    android:background="@drawable/ronded_button_originale"
+                    android:layout_width="50dp"
+                    android:layout_height="25dp"
+                    android:textAllCaps="false"
+                    android:textSize="11dp"
+                    android:layout_marginRight="10dp"
+                    android:text="Original"/>
+            <Button
+                    android:id="@+id/button_translate_item_groupe"
+                    android:background="@drawable/ronded_button_langue"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:textAllCaps="false"
+                    android:text="fr"/>
+            <Button
+                    android:id="@+id/button_translate_demarer_chat"
+                    android:layout_margin="3dp"
+                    android:layout_width="50dp"
+                    android:layout_height="25dp"
+                    android:textAllCaps="false"
+                    android:text="fr"/>
+        </LinearLayout>
     </RelativeLayout>
 </FrameLayout>

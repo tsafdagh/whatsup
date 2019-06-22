@@ -103,9 +103,56 @@ object FireStoreUtil {
                             }
                         } else {
                             items.add(PersonItem(it.toObject(User::class.java)!!, it.id, context))
-
                         }
                     }
+                }
+                onListen(items)
+            }
+    }
+
+    fun addSearchUserListenerForcreatingGroupe(
+        valeurRecherche: String,
+        context: Context,
+        onListen: (List<Item>) -> Unit
+    ): ListenerRegistration {
+        return firestoreInstance.collection("users")
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                if (firebaseFirestoreException != null) {
+                    Log.e("FIRESTORE", "Users listener error?", firebaseFirestoreException)
+                    return@addSnapshotListener
+                }
+
+                val items = mutableListOf<Item>()
+                querySnapshot?.documents?.forEach {
+                    if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
+
+                        if (!valeurRecherche.isEmpty()) {
+                            if (it["name"].toString().toUpperCase().contains(valeurRecherche.toUpperCase())
+                                || it["bio"].toString().toUpperCase().contains(valeurRecherche.toUpperCase())
+                            ) {
+                                items.add(PersonItem(it.toObject(User::class.java)!!, it.id, context))
+                                Log.d("FIRESTOREUTIL", "NOUVELLE VALEURE AJOUTTEE !!!")
+                            }
+                        } else {
+                            items.add(SelectedPersonItem(it.toObject(User::class.java)!!, it.id, context))
+                        }
+                    }
+                }
+                onListen(items)
+            }
+    }
+
+    //TODO creer cette méthode de telle en sorte q'uelle puisse retourner la liste des utilisateurs avec id
+    fun getListOfUser(
+        contxte: Context,
+        onListen: (List<Item>) -> Unit
+    ) {
+        firestoreInstance.collection("users")
+            .get().addOnSuccessListener {
+
+                val items = mutableListOf<Item>()
+                it!!.documents.forEach { obj ->
+                    items.add(PersonItem(obj.toObject(User::class.java)!!, obj.id, contxte))
                 }
                 onListen(items)
             }
@@ -153,6 +200,7 @@ object FireStoreUtil {
     Cette méthode retourne la liste des chat dans une chaine donnée
      */
     fun addChatMessagesListeber(
+        langue: String,
         channelId: String, context: Context,
         onListner: (List<Item>) -> Unit
     ): ListenerRegistration {
@@ -163,12 +211,13 @@ object FireStoreUtil {
                     Log.e("FIRESTORE", "ChatMessageslistener error.", firebaseFirestoreException)
                     return@addSnapshotListener
                 }
-
                 val items = mutableListOf<Item>()
                 querySnapshot!!.documents.forEach {
-                    if (it["type"] == MessageType.TEXT)
-                        items.add(TextMessageItem(it.toObject(TextMessage::class.java)!!, context))
-                    else
+                    if (it["type"] == MessageType.TEXT) {
+
+                        items.add(TextMessageItem(langue, it.toObject(TextMessage::class.java)!!, context))
+
+                    } else
                         items.add(ImageMessageItem(it.toObject(ImageMessage::class.java)!!, context))
                     return@forEach
                 }
@@ -242,31 +291,31 @@ object FireStoreUtil {
     }
 
     // cette méthode permet de recupérer la liste des Groupe en temps réel
-   /* fun addGroupeListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
-        return firestoreInstance.collection("chatgroupes")
-            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                if (firebaseFirestoreException != null) {
-                    Log.e("FIRESTORE", "Groupes listener error?", firebaseFirestoreException)
-                    return@addSnapshotListener
-                }
+    /* fun addGroupeListener(context: Context, onListen: (List<Item>) -> Unit): ListenerRegistration {
+         return firestoreInstance.collection("chatgroupes")
+             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                 if (firebaseFirestoreException != null) {
+                     Log.e("FIRESTORE", "Groupes listener error?", firebaseFirestoreException)
+                     return@addSnapshotListener
+                 }
 
-                val items = mutableListOf<Item>()
-                querySnapshot?.documents?.forEach {
-                    val curentGroup = it.toObject(ChatGroup::class.java)!!
+                 val items = mutableListOf<Item>()
+                 querySnapshot?.documents?.forEach {
+                     val curentGroup = it.toObject(ChatGroup::class.java)!!
 
-                    for (itm in curentGroup.members!!) {
-                        if (itm == FirebaseAuth.getInstance().currentUser?.uid
-                            || curentGroup.adminId == FirebaseAuth.getInstance().currentUser?.uid
-                        ) {
-                            items.add(GroupeItem(it.toObject(ChatGroup::class.java)!!, it.id, context))
-                            break
-                        }
-                    }
-                }
+                     for (itm in curentGroup.members!!) {
+                         if (itm == FirebaseAuth.getInstance().currentUser?.uid
+                             || curentGroup.adminId == FirebaseAuth.getInstance().currentUser?.uid
+                         ) {
+                             items.add(GroupeItem(it.toObject(ChatGroup::class.java)!!, it.id, context))
+                             break
+                         }
+                     }
+                 }
 
-                onListen(items)
-            }
-    }*/
+                 onListen(items)
+             }
+     }*/
 
     /* cette méthode permet de recupérer la liste des Groupe en temps réel
     * et aussi selon un critere de recherche bien defini */
@@ -310,15 +359,12 @@ object FireStoreUtil {
                     } else {
                         // on parcour les membres du groupe un par un
                         for (itm in curentGroup.members!!) {
-
                             /* si l'utilisateur fait partir des membres du groupe oubien s'il est l'administrateur
                              du groupe on affiche le groupe dans son telephone
                              */
                             if (itm == FirebaseAuth.getInstance().currentUser?.uid
                                 || curentGroup.adminId == FirebaseAuth.getInstance().currentUser?.uid
                             ) {
-
-
                                 items.add(GroupeItem(it.toObject(ChatGroup::class.java)!!, it.id, context))
                                 break
                             }

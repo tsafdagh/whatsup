@@ -3,6 +3,13 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.mirai.whatsup">
 
+
+    <!-- Cette restriction permet de s'assurer que les telephone
+    qui veront et pourons télécarger cette appli sur playstore ont une camera -->
+
+    <uses-feature android:name="android.hardware.camera"
+                  android:required="true"/>
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
